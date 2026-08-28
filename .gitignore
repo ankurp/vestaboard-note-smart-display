@@ -1,0 +1,6 @@
+node_modules/
+.env
+native/get-events
+native/summarize
+.DS_Store
+**/.DS_Store
