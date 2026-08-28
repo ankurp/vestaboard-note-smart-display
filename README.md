@@ -74,7 +74,11 @@ Two small Swift helpers provide native macOS integration:
 
    This compiles `native/get-events` and `native/summarize`, and code-signs `get-events` with the Calendar entitlement.
 
-4. **Grant Calendar access.** The first time `get-events` runs, macOS prompts for Calendar access for your terminal app. Approve it (or enable it under **System Settings → Privacy & Security → Calendars**).
+4. **Grant Calendar access.** The first time `get-events` runs, macOS prompts for Calendar access. Approve it (or enable it under **System Settings → Privacy & Security → Calendars**).
+
+   > **Note:** macOS grants Calendar access _per host application_, not per script. The permission belongs to whichever app launches the board — Terminal, VS Code, or `launchd`. If you run it from a different app than the one you first approved, you must grant Calendar access to that app too (and fully quit and reopen it) or you'll see `No matching calendars found`.
+
+   ![Granting Calendar access to an app under System Settings → Privacy & Security → Calendars](docs/images/calendar-permission.png)
 
 ## Usage
 
@@ -152,7 +156,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 ## Troubleshooting
 
 - **`Calendar access denied`** — grant access under System Settings → Privacy & Security → Calendars, then rerun.
-- **`No matching calendars found`** — ensure `CALENDAR_NAME` exactly matches a calendar title in the Calendar app.
+- **`No matching calendars found` (works in one app but not another)** — Calendar access is granted _per host application_. If it works from Terminal but not from VS Code (or vice versa), grant Calendar access to that specific app under **System Settings → Privacy & Security → Calendars**, then fully quit and reopen it (a window reload isn't enough).
+- **`No matching calendars found`** — also ensure `CALENDAR_NAME` exactly matches a calendar title in the Calendar app.
 - **Weather not showing at 7 AM** — confirm `ZIP_CODE` or `CITY` is set and that the location resolves.
 - **Event names truncated instead of summarized** — the Foundation Models runtime may be unavailable; the helper falls back to truncation automatically.
 

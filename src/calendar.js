@@ -61,7 +61,7 @@ function isToday(date) {
   );
 }
 
-/** Fetches all upcoming events across the configured calendars. */
+/** Fetches upcoming timed events across the configured calendars (skips all-day). */
 function getUpcomingEvents() {
   const output = runHelper(`./get-events "${CALENDAR_NAMES.join(",")}"`);
   if (!output) return [];
@@ -76,7 +76,8 @@ function getUpcomingEvents() {
         start: start.trim(),
         allDay: allDay.trim() === "true",
       };
-    });
+    })
+    .filter((event) => !event.allDay);
 }
 
 /** Shortens event names to fit the display, caching results per name. */

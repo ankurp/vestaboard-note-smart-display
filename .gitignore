@@ -38,7 +38,8 @@ DerivedData/
 .Trashes
 
 # --- Editor / IDE ---
-.vscode/
+.vscode/*
+!.vscode/launch.json
 .idea/
 *.swp
 *~
