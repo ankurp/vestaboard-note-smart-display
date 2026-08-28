@@ -1,6 +1,6 @@
 # Vestaboard Smart Home Display
 
-[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![CI](https://github.com/ankurp/vestaboard-note-smart-display/actions/workflows/ci.yml/badge.svg)](https://github.com/ankurp/vestaboard-note-smart-display/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A self-updating [Vestaboard Note](https://www.vestaboard.com/) display for the kitchen. A single Node.js process decides what to show based on the time of day and your calendar — no manual switching required.
@@ -8,6 +8,10 @@ A self-updating [Vestaboard Note](https://www.vestaboard.com/) display for the k
 - **Upcoming events** — when a calendar event starts within the next hour, the board shows the start time and an AI-shortened event name.
 - **Morning weather** — between 7–8 AM, the board shows your local temperature and conditions.
 - **Idle / default** — the rest of the day it shows a friendly message with the weekday and date.
+
+## Demo
+
+![The Vestaboard on the kitchen wall showing "KITCHEN IS THE ♥ OF THE HOME" and the date](docs/images/board-demo.jpg)
 
 ```
    KITCHEN IS THE
@@ -44,8 +48,8 @@ Two small Swift helpers provide native macOS integration:
 1. **Clone and install dependencies:**
 
    ```sh
-   git clone <your-repo-url>
-   cd vestaboard
+   git clone https://github.com/ankurp/vestaboard-note-smart-display.git
+   cd vestaboard-note-smart-display
    npm install
    ```
 
