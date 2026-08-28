@@ -159,15 +159,7 @@ function formatTime12(event) {
 
 /** Relative day label: "TODAY" or the full weekday name. */
 function dayLabel(date) {
-  const weekdays = [
-    "SUNDAY",
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY",
-  ];
+  const weekdays = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
   if (!date) return "";
   return isToday(date) ? "TODAY" : weekdays[date.getDay()];
 }
