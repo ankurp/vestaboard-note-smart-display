@@ -35,7 +35,7 @@ Two small Swift helpers provide native macOS integration:
 ## Requirements
 
 - macOS 14+ (Sonoma or later) — required for EventKit full access and, for event summarization, Apple Foundation Models (macOS 15.1+ on Apple Silicon).
-- [Node.js](https://nodejs.org/) 18+ (uses the built-in `fetch`).
+- [Node.js](https://nodejs.org/) 22+ (LTS; uses the built-in `fetch`).
 - Xcode command line tools (`swiftc`, `codesign`) — to build the Swift helpers.
 - A Vestaboard with a [Cloud API token](https://docs.vestaboard.com/).
 
@@ -144,7 +144,8 @@ npm run format:check
 ```
 
 Continuous integration runs lint, format check, and tests on every push and pull
-request across Node 18, 20, and 22 (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+request across the supported Node.js LTS releases (22, 24) and the latest release
+(see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 

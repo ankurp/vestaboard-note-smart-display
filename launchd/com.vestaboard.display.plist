@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.vestaboard.display</string>
+
+    <!-- Placeholders (__NODE__, __WORKDIR__, __PATH__) are filled in by
+         launchd/install.sh. To configure by hand, replace them with absolute
+         paths. -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>__NODE__</string>
+        <string>__WORKDIR__/board.js</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__WORKDIR__</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__PATH__</string>
+    </dict>
+
+    <!-- Start at login and keep the process alive if it exits. -->
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <key>StandardOutPath</key>
+    <string>__WORKDIR__/logs/board.log</string>
+    <key>StandardErrorPath</key>
+    <string>__WORKDIR__/logs/board.error.log</string>
+</dict>
+</plist>

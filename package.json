@@ -14,7 +14,7 @@
     "build:native": "swiftc -o native/get-events native/get-events.swift -framework EventKit && codesign --force --sign - --entitlements native/entitlements.plist native/get-events && swiftc -o native/summarize native/summarize.swift -framework FoundationModels"
   },
   "engines": {
-    "node": ">=25"
+    "node": ">=22"
   },
   "license": "MIT",
   "dependencies": {
