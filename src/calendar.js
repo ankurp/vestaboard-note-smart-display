@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { CALENDAR_NAMES, COLS, EVENT_WINDOW_MINUTES } from "./config.js";
-import { blankRow, CHARS, textToCharCodes } from "./display.js";
+import { blankRow, centerRow, CHARS, textToCharCodes } from "./display.js";
 
 /**
  * Reads upcoming events from the macOS Calendar (via the `get-events` helper)
@@ -118,8 +118,11 @@ export function getImminentEvents(now = new Date()) {
   return selectImminent(getUpcomingEvents(), now);
 }
 
-/** Renders events as a board: "HH:MM<color>SUMMARY" per row. */
+/** Renders events as a board. A single event uses the whole board; multiple
+ * events use one compact "HH:MM<color>SUMMARY" row each. */
 export function buildEventBoard(events) {
+  if (events.length === 1) return buildSingleEventBoard(events[0]);
+
   const summaries = summarizeEvents(events);
 
   return Array.from({ length: 3 }, (_, i) => {
@@ -139,4 +142,46 @@ export function buildEventBoard(events) {
     }
     return row;
   });
+}
+
+/** Formats a time as "6:30 PM" for the roomier single-event layout. */
+function formatTime12(event) {
+  const date = event.date ?? parseEventDate(event.start);
+  if (!date) return formatTime(event.start, event.allDay);
+
+  let hour = date.getHours();
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  const period = hour >= 12 ? "PM" : "AM";
+  hour %= 12;
+  if (hour === 0) hour = 12;
+  return `${hour}:${minute} ${period}`;
+}
+
+/** Relative day label: "TODAY" or the full weekday name. */
+function dayLabel(date) {
+  const weekdays = [
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+  ];
+  if (!date) return "";
+  return isToday(date) ? "TODAY" : weekdays[date.getDay()];
+}
+
+/** Full-board layout for a single event: name, framed time, and day. */
+function buildSingleEventBoard(event) {
+  const date = event.date ?? parseEventDate(event.start);
+  const color = date && isToday(date) ? CHARS.RED : CHARS.GREEN;
+  const name = (event.summary || "EVENT").toUpperCase().slice(0, COLS);
+  const timeCodes = textToCharCodes(formatTime12(event));
+
+  return [
+    centerRow(textToCharCodes(name)),
+    centerRow([color, CHARS.BLANK, ...timeCodes, CHARS.BLANK, color]),
+    centerRow(textToCharCodes(dayLabel(date))),
+  ];
 }

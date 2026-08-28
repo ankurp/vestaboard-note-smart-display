@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { formatTime, parseEventDate, selectImminent } from "../src/calendar.js";
+import { buildEventBoard, formatTime, parseEventDate, selectImminent } from "../src/calendar.js";
+import { CHARS } from "../src/display.js";
 
 describe("formatTime", () => {
   it("returns ALL for all-day events", () => {
@@ -78,5 +79,29 @@ describe("selectImminent", () => {
       allDay: false,
     }));
     assert.equal(selectImminent(events, now).length, 3);
+  });
+});
+
+describe("buildEventBoard (single event)", () => {
+  const soon = new Date(Date.now() + 30 * 60_000);
+  const event = { summary: "Soccer Practice", start: "", date: soon, allDay: false };
+
+  it("produces a 3x15 board", () => {
+    const board = buildEventBoard([event]);
+    assert.equal(board.length, 3);
+    assert.ok(board.every((row) => row.length === 15));
+  });
+
+  it("renders the event name on the first row", () => {
+    const board = buildEventBoard([event]);
+    const codes = board[0].filter((c) => c !== 0);
+    // "SOCCER PRACTICE" -> starts with S, O, C
+    assert.deepEqual(codes.slice(0, 3), [19, 15, 3]);
+  });
+
+  it("frames the time row with color chips (RED for today)", () => {
+    const board = buildEventBoard([event]);
+    const chips = board[1].filter((c) => c === CHARS.RED);
+    assert.equal(chips.length, 2);
   });
 });
