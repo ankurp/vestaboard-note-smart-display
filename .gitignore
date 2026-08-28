@@ -1,6 +1,44 @@
+# --- Dependencies ---
 node_modules/
+.npm/
+.pnp
+.pnp.js
+
+# --- Environment / secrets ---
 .env
+.env.local
+.env.*.local
+# Keep .env.example tracked.
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Test / coverage output ---
+coverage/
+.nyc_output/
+
+# --- Compiled Swift helpers (built via `npm run build:native`) ---
 native/get-events
 native/summarize
+*.swiftmodule
+*.swiftdoc
+.build/
+DerivedData/
+
+# --- macOS ---
 .DS_Store
 **/.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# --- Editor / IDE ---
+.vscode/
+.idea/
+*.swp
+*~

@@ -1,5 +1,5 @@
 {
-  "name": "vestaboard-smart-display",
+  "name": "vestaboard-note-smart-display",
   "version": "1.0.0",
   "description": "Self-updating Vestaboard Note display: calendar events, morning weather, and an idle clock",
   "main": "board.js",
