@@ -2,34 +2,24 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "type": "swift",
       "request": "launch",
-      "name": "Run Board",
-      "program": "${workspaceFolder}/board.js",
-      "cwd": "${workspaceFolder}",
-      "envFile": "${workspaceFolder}/.env",
-      "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
+      "args": [],
+      "cwd": "${workspaceFolder:vestaboard}",
+      "name": "Debug vestaboard",
+      "target": "vestaboard",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug vestaboard"
     },
     {
-      "type": "node",
+      "type": "swift",
       "request": "launch",
-      "name": "Debug All Tests",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["--test"],
-      "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug Current Test File",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["--test", "${file}"],
-      "console": "integratedTerminal",
-      "skipFiles": ["<node_internals>/**"]
+      "args": [],
+      "cwd": "${workspaceFolder:vestaboard}",
+      "name": "Release vestaboard",
+      "target": "vestaboard",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release vestaboard"
     }
   ]
 }

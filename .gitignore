@@ -1,8 +1,6 @@
-# --- Dependencies ---
-node_modules/
-.npm/
-.pnp
-.pnp.js
+# --- Swift Package Manager ---
+.build/
+.swiftpm/
 
 # --- Environment / secrets ---
 .env
@@ -13,21 +11,10 @@ node_modules/
 # --- Logs ---
 logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
 
-# --- Test / coverage output ---
-coverage/
-.nyc_output/
-
-# --- Compiled Swift helpers (built via `npm run build:native`) ---
-native/get-events
-native/summarize
+# --- Swift build artifacts ---
 *.swiftmodule
 *.swiftdoc
-.build/
 DerivedData/
 
 # --- macOS ---

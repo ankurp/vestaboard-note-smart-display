@@ -3,7 +3,7 @@
 [![CI](https://github.com/ankurp/vestaboard-note-smart-display/actions/workflows/ci.yml/badge.svg)](https://github.com/ankurp/vestaboard-note-smart-display/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A self-updating [Vestaboard Note](https://www.vestaboard.com/) display for the kitchen. A single Node.js process decides what to show based on the time of day and your calendar — no manual switching required.
+A self-updating [Vestaboard Note](https://www.vestaboard.com/) display for the kitchen. A single Swift process decides what to show based on the time of day and your calendar — no manual switching required.
 
 - **Upcoming events** — when a calendar event starts within the next hour, the board shows the start time and an AI-shortened event name.
 - **Morning weather** — between 7–8 AM, the board shows your local temperature and conditions.
@@ -21,7 +21,7 @@ A self-updating [Vestaboard Note](https://www.vestaboard.com/) display for the k
 
 ## How it works
 
-`board.js` runs a one-minute loop that selects a board by priority:
+The `vestaboard` executable runs a one-minute loop that selects a board by priority:
 
 | Priority | Mode    | Condition                                      | Shows                              |
 | -------- | ------- | ---------------------------------------------- | ---------------------------------- |
@@ -31,26 +31,24 @@ A self-updating [Vestaboard Note](https://www.vestaboard.com/) display for the k
 
 The board is only pushed when the layout actually changes, so the Vestaboard API is never spammed.
 
-Two small Swift helpers provide native macOS integration:
+Native macOS integration is built directly into the executable:
 
-- **`get-events`** reads upcoming events from the macOS Calendar via EventKit.
-- **`summarize`** uses Apple's on-device Foundation Models to shorten event names to the 9-character display (e.g. `"Om Taekwondo"` → `TAEKWONDO`). If the model is unavailable, it falls back to truncation.
+- **EventKit** reads upcoming events from the macOS Calendar.
+- **Foundation Models** uses Apple's on-device model to shorten event names to the 9-character display (e.g. `"Om Taekwondo"` → `TAEKWONDO`). If the model is unavailable, it falls back to truncation.
 
 ## Requirements
 
-- macOS 14+ (Sonoma or later) — required for EventKit full access and, for event summarization, Apple Foundation Models (macOS 15.1+ on Apple Silicon).
-- [Node.js](https://nodejs.org/) 22+ (LTS; uses the built-in `fetch`).
-- Xcode command line tools (`swiftc`, `codesign`) — to build the Swift helpers.
+- macOS 14+ (Sonoma or later) — required for EventKit full access. Event summarization additionally requires Apple Foundation Models (macOS 26+ on Apple Silicon); without it, names fall back to truncation.
+- Xcode command line tools (`swift`, `codesign`) — to build and sign the executable.
 - A Vestaboard with a [Cloud API token](https://docs.vestaboard.com/).
 
 ## Setup
 
-1. **Clone and install dependencies:**
+1. **Clone the repository:**
 
    ```sh
    git clone https://github.com/ankurp/vestaboard-note-smart-display.git
    cd vestaboard-note-smart-display
-   npm install
    ```
 
 2. **Configure environment variables:**
@@ -70,13 +68,13 @@ Two small Swift helpers provide native macOS integration:
 
    \*If neither `ZIP_CODE` nor `CITY` is set, weather mode is skipped and the default display is shown instead.
 
-3. **Build the Swift helpers:**
+3. **Build and code-sign the executable:**
 
    ```sh
-   npm run build:native
+   ./Scripts/build.sh
    ```
 
-   This compiles `native/get-events` and `native/summarize`, and code-signs `get-events` with the Calendar entitlement.
+   This compiles the release binary and code-signs it with the Calendar entitlement (from `entitlements.plist`) so it can read events via EventKit.
 
 4. **Grant Calendar access.** The first time `get-events` runs, macOS prompts for Calendar access. Approve it (or enable it under **System Settings → Privacy & Security → Calendars**).
 
@@ -89,25 +87,37 @@ Two small Swift helpers provide native macOS integration:
 Run the display:
 
 ```sh
-npm start
+swift run vestaboard
+```
+
+Or run the signed release binary directly (recommended, so Calendar access works reliably):
+
+```sh
+./Scripts/build.sh
+.build/release/vestaboard
 ```
 
 The process updates the board immediately, then re-evaluates every minute. Press `Ctrl+C` to stop.
 
 ### Run continuously
 
-To keep the display running in the background, use a process manager such as [`pm2`](https://pm2.keymetrics.io/):
+To keep the display running in the background and start it at login, install the
+bundled `launchd` agent:
 
 ```sh
-npm install -g pm2
-pm2 start board.js --name vestaboard
-pm2 save
-pm2 startup   # follow the printed instructions to start on boot
+./launchd/install.sh
+```
+
+This builds and signs the release binary, writes a per-user LaunchAgent, and
+starts it. To stop and remove it:
+
+```sh
+./launchd/uninstall.sh
 ```
 
 ## Configuration
 
-Behavior is tuned via constants in [`src/config.js`](src/config.js):
+Behavior is tuned via constants in [`Sources/VestaboardCore/Config.swift`](Sources/VestaboardCore/Config.swift):
 
 | Constant               | Default  | Description                                             |
 | ---------------------- | -------- | ------------------------------------------------------- |
@@ -120,17 +130,24 @@ Behavior is tuned via constants in [`src/config.js`](src/config.js):
 ## Project structure
 
 ```
-board.js              Main loop — selects and pushes a board each minute
-src/
-  config.js           Environment configuration and behavior constants
-  display.js          Character encoding, row helpers, Vestaboard API client
-  clock.js            Default idle board (message + weekday/date)
-  weather.js          Weather board (Open-Meteo, with caching)
-  calendar.js         Event board (EventKit + Foundation Models helpers)
-native/
-  get-events.swift    EventKit helper — reads upcoming calendar events
-  summarize.swift     Foundation Models helper — shortens event names
-  entitlements.plist  Calendar entitlement for the signed get-events binary
+Package.swift              Swift package manifest
+Sources/
+  VestaboardCore/          Platform-independent, unit-tested logic
+    Config.swift           Environment configuration and behavior constants
+    DotEnv.swift           Minimal .env file loader
+    Display.swift          Character encoding, row helpers, Vestaboard API client
+    Clock.swift            Default idle board (message + weekday/date)
+    Weather.swift          Weather board (Open-Meteo, with caching)
+    CalendarBoard.swift    Event parsing, selection, and board rendering
+    Models.swift           Shared value types (Board, CalendarEvent)
+  vestaboard/              The macOS executable
+    App.swift              Main loop — selects and pushes a board each minute
+    EventKitProvider.swift EventKit reader (upcoming calendar events)
+    Summarizer.swift       Foundation Models event-name shortener
+Tests/
+  VestaboardCoreTests/     Unit tests for the core logic
+entitlements.plist         Calendar entitlement for the signed binary
+Scripts/build.sh           Builds and code-signs the release binary
 ```
 
 ## Data sources
@@ -141,19 +158,17 @@ native/
 
 ## Development
 
-The platform-independent logic lives in `src/` and is covered by unit tests that
-run anywhere (no macOS or Vestaboard required).
+The platform-independent logic lives in `Sources/VestaboardCore/` and is covered
+by unit tests that run anywhere (no Vestaboard required).
 
 ```sh
-npm test            # run the test suite (node --test)
-npm run lint        # ESLint
-npm run format      # Prettier (write)
-npm run format:check
+swift build         # build the package
+swift test          # run the test suite
+swift run vestaboard # run the display
 ```
 
-Continuous integration runs lint, format check, and tests on every push and pull
-request across the supported Node.js LTS releases (22, 24) and the latest release
-(see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+Continuous integration builds and tests the package on macOS on every push and
+pull request (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 

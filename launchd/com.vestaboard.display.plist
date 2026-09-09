@@ -5,13 +5,12 @@
     <key>Label</key>
     <string>com.vestaboard.display</string>
 
-    <!-- Placeholders (__NODE__, __WORKDIR__, __PATH__) are filled in by
+    <!-- Placeholders (__BINARY__, __WORKDIR__, __PATH__) are filled in by
          launchd/install.sh. To configure by hand, replace them with absolute
          paths. -->
     <key>ProgramArguments</key>
     <array>
-        <string>__NODE__</string>
-        <string>__WORKDIR__/board.js</string>
+        <string>__BINARY__</string>
     </array>
 
     <key>WorkingDirectory</key>

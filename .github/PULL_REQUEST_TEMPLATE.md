@@ -8,8 +8,7 @@
 
 ## Checklist
 
-- [ ] `npm run lint` passes
-- [ ] `npm run format:check` passes
-- [ ] `npm test` passes
+- [ ] `swift build` passes
+- [ ] `swift test` passes
 - [ ] Added or updated tests for the change
 - [ ] Updated documentation if needed
