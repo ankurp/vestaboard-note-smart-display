@@ -20,10 +20,13 @@ actor EventKitProvider {
         let status = EKEventStore.authorizationStatus(for: .event)
         switch status {
         case .notDetermined:
+            // Access is granted per-process, so a local store avoids sending
+            // the actor-isolated `store` to nonisolated request methods.
+            let requestStore = EKEventStore()
             if #available(macOS 14.0, *) {
-                _ = try? await store.requestFullAccessToEvents()
+                _ = try? await requestStore.requestFullAccessToEvents()
             } else {
-                _ = try? await store.requestAccess(to: .event)
+                _ = try? await requestStore.requestAccess(to: .event)
             }
         case .denied, .restricted:
             throw EventProviderError.accessDenied
