@@ -4,10 +4,7 @@ import PackageDescription
 let package = Package(
     name: "vestaboard",
     platforms: [
-        .macOS(.v14)
-    ],
-    dependencies: [
-        .package(url: "https://github.com/swiftlang/swift-testing.git", from: "0.10.0")
+        .macOS(.v15)
     ],
     targets: [
         // Platform-independent logic (character encoding, board building,
@@ -25,8 +22,7 @@ let package = Package(
         .testTarget(
             name: "VestaboardCoreTests",
             dependencies: [
-                "VestaboardCore",
-                .product(name: "Testing", package: "swift-testing"),
+                "VestaboardCore"
             ]
         ),
     ]
