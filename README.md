@@ -76,7 +76,7 @@ Native macOS integration is built directly into the executable:
 
    This compiles the release binary and code-signs it with the Calendar entitlement (from `entitlements.plist`) so it can read events via EventKit.
 
-4. **Grant Calendar access.** The first time `get-events` runs, macOS prompts for Calendar access. Approve it (or enable it under **System Settings → Privacy & Security → Calendars**).
+4. **Grant Calendar access.** The first time `vestaboard` runs, macOS prompts for Calendar access. Approve it (or enable it under **System Settings → Privacy & Security → Calendars**).
 
    > **Note:** macOS grants Calendar access _per host application_, not per script. The permission belongs to whichever app launches the board — Terminal, VS Code, or `launchd`. If you run it from a different app than the one you first approved, you must grant Calendar access to that app too (and fully quit and reopen it) or you'll see `No matching calendars found`.
 
