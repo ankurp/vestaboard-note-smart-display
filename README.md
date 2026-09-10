@@ -38,7 +38,7 @@ Native macOS integration is built directly into the executable:
 
 ## Requirements
 
-- macOS 14+ (Sonoma or later) — required for EventKit full access. Event summarization additionally requires Apple Foundation Models (macOS 26+ on Apple Silicon); without it, names fall back to truncation.
+- macOS 15+ (Sequoia or later) — required for EventKit full access. Event summarization additionally requires Apple Foundation Models (macOS 26+ on Apple Silicon); without it, names fall back to truncation.
 - Xcode command line tools (`swift`, `codesign`) — to build and sign the executable.
 - A Vestaboard with a [Cloud API token](https://docs.vestaboard.com/).
 
